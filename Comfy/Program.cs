@@ -1,3 +1,8 @@
+using DLL;
+using DOMAIN;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 namespace Comfy
 {
     public class Program
@@ -5,6 +10,16 @@ namespace Comfy
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<ComfyDbContext>(options =>
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("DefaultConnection"),
+                    sqlOptions => sqlOptions.CommandTimeout(30)
+                ));
+
+            builder.Services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<ComfyDbContext>()
+                .AddDefaultTokenProviders();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -20,8 +35,10 @@ namespace Comfy
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
