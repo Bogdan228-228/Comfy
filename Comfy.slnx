@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BLL/BLL.csproj" />
+  <Project Path="Comfy/Comfy.csproj" />
+  <Project Path="DLL/DLL.csproj" />
+  <Project Path="DOMAIN/DOMAIN.csproj" />
+</Solution>
