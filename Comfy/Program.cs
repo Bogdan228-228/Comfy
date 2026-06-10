@@ -23,6 +23,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddScoped<BLL.IProductService, BLL.ProductService>();
+
 var app = builder.Build();
 
 // Seed Admin
