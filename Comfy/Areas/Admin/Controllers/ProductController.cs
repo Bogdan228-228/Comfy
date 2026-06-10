@@ -1,14 +1,17 @@
-using Microsoft.AspNetCore.Mvc;
-using BLL;
+using BLL.Interfaces;
 using DOMAIN;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Comfy.Controllers
+namespace Comfy.Areas.Admin.Controllers
 {
-    public class AdminController : Controller
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+    public class ProductController : Controller
     {
         private readonly IProductService _productService;
 
-        public AdminController(IProductService productService)
+        public ProductController(IProductService productService)
         {
             _productService = productService;
         }
@@ -26,19 +29,19 @@ namespace Comfy.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Product product)
+        public async Task<IActionResult> Create(Product product)
         {
             if (ModelState.IsValid)
             {
-                _productService.AddProduct(product);
+                await _productService.AddProductAsync(product);
                 return RedirectToAction("Index");
             }
             return View(product);
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _productService.DeleteProduct(id);
+            await _productService.DeleteProductAsync(id);
             return RedirectToAction("Index");
         }
     }

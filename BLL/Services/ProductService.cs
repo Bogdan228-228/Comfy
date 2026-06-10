@@ -1,9 +1,8 @@
 using DOMAIN;
 using DLL;
-using System.Collections.Generic;
-using System.Linq;
+using BLL.Interfaces;
 
-namespace BLL
+namespace BLL.Services
 {
     public class ProductService : IProductService
     {
@@ -18,19 +17,19 @@ namespace BLL
 
         public Product GetProductById(int id) => _context.Products.FirstOrDefault(p => p.Id == id);
 
-        public void AddProduct(Product product)
+        public async Task AddProductAsync(Product product)
         {
             _context.Products.Add(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteProduct(int id)
+        public async Task DeleteProductAsync(int id)
         {
             var product = GetProductById(id);
             if (product != null)
             {
                 _context.Products.Remove(product);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
     }

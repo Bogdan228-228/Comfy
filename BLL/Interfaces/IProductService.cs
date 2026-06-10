@@ -1,12 +1,12 @@
 using DOMAIN;
 
-namespace BLL
+namespace BLL.Interfaces
 {
     public interface IProductService
     {
         IEnumerable<Product> GetAllProducts();
         Product GetProductById(int id);
-        void AddProduct(Product product);
-        void DeleteProduct(int id);
+        Task AddProductAsync(Product product);
+        Task DeleteProductAsync(int id);
     }
 }
