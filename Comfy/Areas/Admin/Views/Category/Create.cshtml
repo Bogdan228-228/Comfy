@@ -1,0 +1,29 @@
+@model CategoryViewModel
+
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">Додати категорію</h4>
+        </div>
+        <div class="card-body">
+            <form asp-area="Admin" asp-controller="Category" asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label font-weight-bold"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between pt-3">
+                    <a asp-area="Admin" asp-controller="Category" asp-action="Index" class="btn btn-secondary">Назад до списку</a>
+                    <button type="submit" class="btn btn-success" style="background-color: #43b02a; border: none;">Зберегти категорію</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

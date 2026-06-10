@@ -1,9 +1,25 @@
 @model IEnumerable<DOMAIN.Product>
 
+@{
+    ViewData["Title"] = "Products";
+}
+
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 style="color: #43b02a; font-weight: bold;">Панель керування Comfy</h2>
-        <a asp-action="Create" class="btn btn-success" style="background-color: #43b02a; border: none;">+ Додати новий товар</a>
+
+        <div class="d-flex gap-2">
+            <a asp-area="Admin" asp-controller="Category" asp-action="Index"
+               class="btn btn-success"
+               style="background-color: #43b02a; border: none;">
+                Доступні категорії
+            </a>
+            <a asp-area="Admin" asp-controller="Product" asp-action="Create"
+               class="btn btn-success"
+               style="background-color: #43b02a; border: none;">
+                + Додати новий товар
+            </a>
+        </div>
     </div>
 
     <div class="card shadow-sm">

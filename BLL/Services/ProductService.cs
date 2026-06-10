@@ -19,7 +19,7 @@ namespace BLL.Services
 
         public async Task AddProductAsync(Product product)
         {
-            _context.Products.Add(product);
+            await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
         }
 
