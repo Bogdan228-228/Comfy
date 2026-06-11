@@ -1,7 +1,9 @@
 using BLL.Interfaces;
+using Comfy.ViewModels;
 using DOMAIN;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Comfy.Areas.Admin.Controllers
 {
@@ -10,10 +12,12 @@ namespace Comfy.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, ICategoryService categoryService)
         {
             _productService = productService;
+            _categoryService = categoryService;
         }
 
         public IActionResult Index()
@@ -25,18 +29,44 @@ namespace Comfy.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            var categories = _categoryService.GetAllCategories()
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                });
+
+            ViewBag.Categories = categories;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(ProductViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var product = new Product
+                { 
+                    Name = model.Name,
+                    Description = model.Description,
+                    Price = model.Price,
+                    Quantity = model.Quantity,
+                    CategoryId = model.CategoryId,
+                    ImageUrl = model.ImageUrl ?? ""
+                };
+
                 await _productService.AddProductAsync(product);
                 return RedirectToAction("Index");
             }
-            return View(product);
+
+            ViewBag.Categories = _categoryService.GetAllCategories()
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                });
+
+            return View(model);
         }
 
         public async Task<IActionResult> Delete(int id)

@@ -30,6 +30,8 @@
                         <th>ID</th>
                         <th>Назва товару</th>
                         <th>Ціна</th>
+                        <th>Кількість</th>
+                        <th>Категорія</th>
                         <th>Дії</th>
                     </tr>
                 </thead>
@@ -37,7 +39,9 @@
                     @if (!Model.Any())
                     {
                         <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">Товарів поки немає. Додайте перший!</td>
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                Товарів поки немає. Додайте перший!
+                            </td>
                         </tr>
                     }
                     else
@@ -46,10 +50,26 @@
                         {
                             <tr>
                                 <td>#@item.Id</td>
-                                <td class="font-weight-bold">@item.Name</td>
+                                <td class="fw-bold">@item.Name</td>
                                 <td><span class="badge bg-light text-dark fs-6">@item.Price ₴</span></td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Category?.Name</td>
                                 <td>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" onclick="return confirm('Ви впевнені?')">Видалити</a>
+                                    <a asp-action="Details" asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-outline-info me-1">
+                                        Деталі
+                                    </a>
+
+                                    <a asp-action="Edit" asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-outline-primary me-1">
+                                        Змінити
+                                    </a>
+
+                                    <a asp-action="Delete" asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Ви впевнені?')">
+                                        Видалити
+                                    </a>
                                 </td>
                             </tr>
                         }

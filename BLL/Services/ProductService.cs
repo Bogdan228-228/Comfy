@@ -1,6 +1,7 @@
 using DOMAIN;
 using DLL;
 using BLL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services
 {
@@ -13,7 +14,7 @@ namespace BLL.Services
             _context = context;
         }
 
-        public IEnumerable<Product> GetAllProducts() => _context.Products.ToList();
+        public IEnumerable<Product> GetAllProducts() => _context.Products.Include(c => c.Category).ToList();
 
         public Product GetProductById(int id) => _context.Products.FirstOrDefault(p => p.Id == id);
 
