@@ -33,5 +33,15 @@ namespace BLL.Services
                 await _context.SaveChangesAsync();
             }
         }
+
+        public List<Product> SearchProductsByName(string searchString)
+        {
+            var products = _context.Products.Include(p => p.Category).AsQueryable();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(p => p.Name.Contains(searchString));
+            }
+            return products.ToList();
+        }
     }
 }

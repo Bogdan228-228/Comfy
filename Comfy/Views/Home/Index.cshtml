@@ -1,8 +1,28 @@
-﻿@{
+﻿@using DOMAIN
+@model List<Product>
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2 class="text-center mb-4">All Products</h2>
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <form asp-action="Index" method="get" class="input-group">
+                <input type="text" name="searchString" value="@Context.Request.Query["searchString"]"
+                       class="form-control" placeholder="Пошук товару за назвою..." />
+                <button type="submit" class="btn btn-outline-success">Пошук</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var product in Model)
+        {
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2">
+                @await Html.PartialAsync("_ProductCard", product)
+            </div>
+        }
+    </div>
 </div>

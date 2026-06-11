@@ -1,14 +1,31 @@
+using BLL.Interfaces;
 using Comfy.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace Comfy.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly IProductService _productService;
+
+        public HomeController(IProductService productService)
         {
-            return View();
+            _productService = productService;
+        }
+
+        [HttpGet]
+        public IActionResult Index(string searchString)
+        {
+            if (string.IsNullOrEmpty(searchString))
+            {
+                var products = _productService.GetAllProducts();
+                return View(products);
+            }
+
+            var filtered = _productService.SearchProductsByName(searchString);
+            return View(filtered);
         }
 
         public IActionResult Privacy()
