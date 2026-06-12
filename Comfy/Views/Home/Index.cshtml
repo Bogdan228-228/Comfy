@@ -1,12 +1,27 @@
-﻿@using DOMAIN
+﻿@using Comfy.Helpers
+@using DOMAIN
 @model List<Product>
 @{
     ViewData["Title"] = "Home Page";
+    var cart = Context.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+    var cartCount = cart.Sum(c => c.Quantity);
 }
 
-<h2 class="text-center mb-4">All Products</h2>
-
 <div class="container">
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="mb-0 text-center flex-grow-1">All Products</h2>
+
+        <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-success position-relative ms-3">
+            <i class="bi bi-cart"></i> Кошик
+            @if (cartCount > 0)
+            {
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    @cartCount
+                </span>
+            }
+        </a>
+    </div>
+
     <div class="row mb-4">
         <div class="col-12">
             <form asp-action="Index" method="get" class="input-group">

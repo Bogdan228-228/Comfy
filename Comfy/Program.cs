@@ -13,6 +13,8 @@ builder.Services.AddDbContext<ComfyDbContext>(options =>
         sqlOptions => sqlOptions.CommandTimeout(30)
     ));
 
+builder.Services.AddSession();
+
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ComfyDbContext>()
     .AddDefaultTokenProviders();
@@ -46,6 +48,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
