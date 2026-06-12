@@ -1,3 +1,5 @@
+using BLL.Interfaces;
+using BLL.Services;
 using DLL;
 using DOMAIN;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +13,8 @@ builder.Services.AddDbContext<ComfyDbContext>(options =>
         sqlOptions => sqlOptions.CommandTimeout(30)
     ));
 
+builder.Services.AddSession();
+
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ComfyDbContext>()
     .AddDefaultTokenProviders();
@@ -22,6 +26,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
@@ -41,11 +48,17 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+);
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")

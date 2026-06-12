@@ -1,0 +1,34 @@
+﻿@model List<CartItem>
+
+<h2>Ваш кошик</h2>
+
+@if (!Model.Any())
+{
+    <p>Кошик порожній</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Назва</th>
+                <th>Ціна</th>
+                <th>Кількість</th>
+                <th>Сума</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Price ₴</td>
+                    <td>@item.Quantity</td>
+                    <td>@(item.Price * item.Quantity) ₴</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Checkout" class="btn btn-success">Замовити</a>
+}
