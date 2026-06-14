@@ -16,7 +16,7 @@ namespace BLL.Services
 
         public IEnumerable<Product> GetAllProducts() => _context.Products.Include(c => c.Category).ToList();
 
-        public Product GetProductById(int id) => _context.Products.FirstOrDefault(p => p.Id == id);
+        public Product? GetProductById(int id) => _context.Products.FirstOrDefault(p => p.Id == id);
 
         public async Task AddProductAsync(Product product)
         {
@@ -42,6 +42,12 @@ namespace BLL.Services
                 products = products.Where(p => p.Name.Contains(searchString));
             }
             return products.ToList();
+        }
+
+        public async Task UpdateProductAsync(Product product)
+        {
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
         }
     }
 }
