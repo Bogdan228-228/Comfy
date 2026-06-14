@@ -77,4 +77,35 @@ public class CartController : Controller
 
         return RedirectToAction("Index", "Home");
     }
+
+    [HttpPost]
+    public IActionResult Remove(int productId)
+    {
+        var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+
+        var item = cart.FirstOrDefault(c => c.ProductId == productId);
+        if (item != null)
+        {
+            cart.Remove(item);
+            HttpContext.Session.SetObjectAsJson("Cart", cart);
+        }
+
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public IActionResult UpdateQuantity(int productId, int quantity)
+    {
+        var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+
+        var item = cart.FirstOrDefault(c => c.ProductId == productId);
+        if (item != null)
+        {
+            item.Quantity = quantity > 0 ? quantity : 1;
+            HttpContext.Session.SetObjectAsJson("Cart", cart);
+
+        }
+
+        return RedirectToAction("Index");
+    }
 }

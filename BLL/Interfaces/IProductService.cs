@@ -13,6 +13,5 @@ namespace BLL.Interfaces
         List<Product> SearchProductsByName(string searchString);
         Task UpdateProductAsync(Product product);
         Task<Product> GetProductByIdAsync(int id);
-        Task AddProductAsync(Product product);
     }
 }

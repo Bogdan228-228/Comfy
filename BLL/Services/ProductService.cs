@@ -53,5 +53,10 @@ namespace BLL.Services
 
             await _context.SaveChangesAsync();
         }
+
+        public Product? GetProductById(int id)
+        {
+            return _context.Products.Include(p => p.Category).FirstOrDefault(p => p.Id == id);
+        }
     }
 }

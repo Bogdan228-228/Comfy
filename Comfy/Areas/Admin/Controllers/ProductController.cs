@@ -115,7 +115,7 @@ namespace Comfy.Areas.Admin.Controllers
             {
                 try
                 {
-                    await _productService.EditProductAsync(updatedProduct);
+                    await _productService.UpdateProductAsync(updatedProduct);
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateConcurrencyException)

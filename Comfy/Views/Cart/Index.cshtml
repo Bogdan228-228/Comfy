@@ -1,34 +1,36 @@
-﻿@model List<CartItem>
-
-<h2>Ваш кошик</h2>
-
-@if (!Model.Any())
-{
-    <p>Кошик порожній</p>
-}
-else
-{
-    <table class="table">
-        <thead>
+﻿<table class="table">
+    <thead>
+        <tr>
+            <th>Назва</th>
+            <th>Ціна</th>
+            <th>Кількість</th>
+            <th>Сума</th>
+            <th>Дії</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>Назва</th>
-                <th>Ціна</th>
-                <th>Кількість</th>
-                <th>Сума</th>
+                <td>@item.Name</td>
+                <td>@item.Price ₴</td>
+                <td>
+                    <form asp-action="UpdateQuantity" method="post" style="display:inline;">
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <input type="number" name="quantity" value="@item.Quantity" min="1" style="width:60px;" />
+                        <button type="submit" class="btn btn-sm btn-primary">Оновити</button>
+                    </form>
+                </td>
+                <td>@(item.Price * item.Quantity) ₴</td>
+                <td>
+                    <form asp-action="Remove" method="post" style="display:inline;">
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <button type="submit" class="btn btn-sm btn-danger">Видалити</button>
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Name</td>
-                    <td>@item.Price ₴</td>
-                    <td>@item.Quantity</td>
-                    <td>@(item.Price * item.Quantity) ₴</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>
 
-    <a asp-action="Checkout" class="btn btn-success">Замовити</a>
-}
+<a asp-action="Checkout" class="btn btn-success">Замовити</a>
