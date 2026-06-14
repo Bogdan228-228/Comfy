@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Підтвердження замовлення";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow" style="width: 400px;">
+        <div class="card-header bg-primary text-white text-center">
+            <h4>Підтвердження замовлення</h4>
+        </div>
+        <div class="card-body text-center">
+            <p>Ваш код підтвердження: <strong>@ViewBag.Code</strong></p>
+
+            <form asp-action="Confirm" method="post">
+                <div class="form-group mb-3">
+                    <label for="enteredCode">Введіть код підтвердження</label>
+                    <input type="text" name="enteredCode" class="form-control text-center" required />
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Підтвердити замовлення</button>
+            </form>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger mt-3">
+                    Невірний код підтвердження
+                </div>
+            }
+        </div>
+    </div>
+</div>

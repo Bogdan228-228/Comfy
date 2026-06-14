@@ -32,8 +32,13 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
-// Seed Admin
 await using var scope = app.Services.CreateAsyncScope();
+
+// Create database if it doesnt exist
+var dbContext = scope.ServiceProvider.GetRequiredService<ComfyDbContext>();
+dbContext.Database.Migrate();
+
+// Seed Admin
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 await DbSeeder.SeedAdminAsync(userManager, roleManager);

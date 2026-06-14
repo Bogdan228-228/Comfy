@@ -50,6 +50,7 @@ public class CartController : Controller
     }
 
     [Authorize]
+    [HttpGet]
     public IActionResult Checkout()
     {
         var cart = HttpContext.Session.GetObjectFromJson<List<CartItem>>("Cart");
@@ -63,20 +64,94 @@ public class CartController : Controller
             OrderDate = DateTime.Now,
             TotalPrice = cart.Sum(c => c.Price * c.Quantity),
             Status = OrderStatus.Pending,
-            OrderDetails = cart.Select(c => new OrderDetail
-            {
-                ProductId = c.ProductId,
-                Quantity = c.Quantity
-            }).ToList()
+            OrderDetails = new List<OrderDetail>()
         };
 
-        _context.Orders.Add(order);
-        _context.SaveChanges();
+        foreach (var item in cart)
+        {
+            var product = _context.Products.Find(item.ProductId);
+            if (product != null)
+            {
+                if (product.Quantity < item.Quantity)
+                {
+                    throw new Exception("Недостатньо товару на складі");
+                }
 
-        HttpContext.Session.Remove("Cart");
+                order.OrderDetails.Add(new OrderDetail
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity
+                });
+            }
+        }
 
-        return RedirectToAction("Index", "Home");
+        HttpContext.Session.SetObjectAsJson("PendingOrder", order);
+
+        var random = new Random();
+        var code = random.Next(100000, 999999);
+        HttpContext.Session.SetString("ConfirmCode", code.ToString());
+
+        return RedirectToAction("Confirm");
     }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult Confirm()
+    {
+        var order = HttpContext.Session.GetObjectFromJson<Order>("PendingOrder");
+
+        ViewBag.Code = HttpContext.Session.GetString("ConfirmCode");
+
+        return View(order);
+    }
+    [Authorize]
+    [HttpPost]
+    public IActionResult Confirm(string enteredCode)
+    {
+        var expectedCode = HttpContext.Session.GetString("ConfirmCode");
+        if (enteredCode == expectedCode)
+        {
+            var order = HttpContext.Session.GetObjectFromJson<Order>("PendingOrder");
+            if (order == null) return RedirectToAction("Index", "Cart");
+
+            foreach (var item in order.OrderDetails)
+            {
+                var product = _context.Products.Find(item.ProductId);
+                if (product != null)
+                {
+                    if (product.Quantity < item.Quantity)
+                    {
+                        throw new Exception("Недостатньо товару на складі");
+                    }
+                    product.Quantity -= item.Quantity;
+
+                    _context.Products.Update(product);
+                }
+            }
+
+            _context.Orders.Add(order);
+            _context.SaveChanges();
+
+            HttpContext.Session.Remove("Cart");
+            HttpContext.Session.Remove("PendingOrder");
+            HttpContext.Session.Remove("ConfirmCode");
+
+            return RedirectToAction("Success");
+        }
+
+        ModelState.AddModelError("", "Невірний код підтвердження");
+        var orderRetry = HttpContext.Session.GetObjectFromJson<Order>("PendingOrder");
+        ViewBag.Code = HttpContext.Session.GetString("ConfirmCode");
+        return View(orderRetry);
+    }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult Success()
+    {
+        return View();
+    }
+
 
     [HttpPost]
     public IActionResult Remove(int productId)
