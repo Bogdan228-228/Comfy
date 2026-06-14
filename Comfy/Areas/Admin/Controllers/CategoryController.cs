@@ -31,6 +31,7 @@ namespace Comfy.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryViewModel model)
         {
             if (ModelState.IsValid)
