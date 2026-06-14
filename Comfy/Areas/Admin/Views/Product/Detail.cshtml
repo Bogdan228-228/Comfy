@@ -1,0 +1,32 @@
+﻿@using DOMAIN
+@model Product
+
+<div class="container mt-5" style="max-width: 800px;">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">Деталі товару</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5">
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow-sm" />
+                </div>
+                <div class="col-md-7">
+                    <h3>@Model.Name</h3>
+                    <p class="text-muted">Категорія: @Model.Category?.Name</p>
+                    <p><strong>Ціна:</strong> @Model.Price.ToString("C")</p>
+                    <p><strong>Кількість на складі:</strong> @Model.Quantity</p>
+                    <p><strong>Опис:</strong></p>
+                    <p>@Model.Description</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary">Назад до списку</a>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редагувати</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Видалити</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -16,7 +16,9 @@ namespace BLL.Services
 
         public IEnumerable<Product> GetAllProducts() => _context.Products.Include(c => c.Category).ToList();
 
-        public Product GetProductById(int id) => _context.Products.FirstOrDefault(p => p.Id == id);
+        public async Task<Product> GetProductByIdAsync(int id) => await _context.Products
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task AddProductAsync(Product product)
         {
@@ -26,7 +28,7 @@ namespace BLL.Services
 
         public async Task DeleteProductAsync(int id)
         {
-            var product = GetProductById(id);
+            var product = await GetProductByIdAsync(id);
             if (product != null)
             {
                 _context.Products.Remove(product);
@@ -42,6 +44,24 @@ namespace BLL.Services
                 products = products.Where(p => p.Name.Contains(searchString));
             }
             return products.ToList();
+        }
+
+        public async Task EditProductAsync(Product updatedProduct)
+        {
+            var product = await GetProductByIdAsync(updatedProduct.Id);
+            if (product == null)
+            {
+                throw new ArgumentException("Product not found");
+            }
+
+            product.Name = updatedProduct.Name;
+            product.Description = updatedProduct.Description;
+            product.Price = updatedProduct.Price;
+            product.Quantity = updatedProduct.Quantity;
+            product.ImageUrl = updatedProduct.ImageUrl;
+            product.CategoryId = updatedProduct.CategoryId;
+
+            await _context.SaveChangesAsync();
         }
     }
 }
