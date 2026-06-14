@@ -46,20 +46,10 @@ namespace BLL.Services
             return products.ToList();
         }
 
-        public async Task EditProductAsync(Product updatedProduct)
-        {
-            var product = await GetProductByIdAsync(updatedProduct.Id);
-            if (product == null)
-            {
-                throw new ArgumentException("Product not found");
-            }
 
-            product.Name = updatedProduct.Name;
-            product.Description = updatedProduct.Description;
-            product.Price = updatedProduct.Price;
-            product.Quantity = updatedProduct.Quantity;
-            product.ImageUrl = updatedProduct.ImageUrl;
-            product.CategoryId = updatedProduct.CategoryId;
+        public async Task UpdateProductAsync(Product product)
+        {
+            _context.Products.Update(product);
 
             await _context.SaveChangesAsync();
         }
